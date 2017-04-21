@@ -39,6 +39,12 @@ class Pyspk(object):
         return spark.read.json(s3_read_link)
 
     def _spark_filter(self):
+        """
+        Filter criteria used:
+            - Keep users with more than 60 posts
+            - Keep users who did not delete their accounts
+        
+        """
         result_filtered_users = self.df.groupBy(
             'author').count().where('count>60').where('author != "[deleted]"')
         df_filtered = self.df[self.df.author.isin(set(result_filtered_users.toPandas().author.tolist()))]
@@ -60,6 +66,10 @@ class Pyspk(object):
         return df.toPandas()
 
     def write_s3(self, data_frame, s3_write_link):
+        """
+        Will write to S3 bucket in several csv's. Use CLI to merge them into one
+        
+        """
         data_frame.write.csv(s3_write_link)
 
 
