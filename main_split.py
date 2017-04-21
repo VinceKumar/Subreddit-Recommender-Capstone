@@ -13,20 +13,29 @@ class Pyspk(object):
        Write filtered CSV to S3
        Then finish preprocessing in Pandas
        Split Train/Test at UTC time
-
+       
+        Args:
+            s3_read_link: (str) link to s3 dataset
+            utc_split: (int) where to split the data into train/test 
+                everything before the utc_split is train and everything after 
+                is test data 
     """
 
     def __init__(self, s3_read_link,utc_split):
-
-        # self.s3_read_link = s3_read_link
         self.utc_split = utc_split
         self.df = self.read_data(s3_read_link)
         self.df_filtered = self._spark_filter()
-        self.train, self, test = self.split(self.utc_split)
+        self.train, self.test = self.split(self.utc_split)
 
 
 
     def read_data(self,s3_read_link):
+        """
+        Loads data into spark using read json method from s3 link
+        
+        Args:
+            s3_read_link: (str) link to s3 dataset
+        """
         return spark.read.json(s3_read_link)
 
     def _spark_filter(self):
@@ -55,7 +64,16 @@ class Pyspk(object):
 
 
 class Pndas(object):
-    """docstring for ClassName"""
+    """Process Filtered/Cleaned data from Spark using Pandas methods
+       These are the steps this class does:
+        1. Create Utility matrix (rows = Users, columns = subreddits)
+        2. Computer user-user similarity between each user (Jaccard Similarity)
+        3. Find the most similar users
+        4. Get Recommendations based on where most similar users have comment activity
+    
+        Args:
+            df: (DataFrame) Cleaned/Filtered DataFrame
+    """
 
     def __init__(self, df):
         self.author = None
@@ -73,16 +91,10 @@ class Pndas(object):
         Returns:
             Pandas dataframe: df_utility_matrix
 
-
         '''
-
-        # df_filtered = self.df[self.df.author.isin(self.df_post_count_filtered['author'])]
-
-        # df_filtered.groupby(['author', 'subreddit']).size().reset_index(name='subreddit posts')
 
         df_utility_matrix = pd.crosstab(self.df['author'], self.df[
                                         'subreddit']).reset_index()
-        # df_utility_matrix.head()
 
         # Convert nonzero terms to 1
         self.author = df_utility_matrix.pop('author')
@@ -97,13 +109,11 @@ class Pndas(object):
         '''Computes the Jaccard Similarity for each user to all other users in the
         Original set of users
 
-        Args:
+        Args: 
 
         Returns:
             jaccard_user_similarity: (np array) array comparing similarity for each user with 
             every other user 
-
-
 
         '''
 
@@ -131,11 +141,8 @@ class Pndas(object):
             user_name: (str) user to name recommendation on
 
         Returns:
-            top_users_ranked: most similar users
+            top_users_ranked: (DataFrame) Most similar users for all users
         
-
-        
-
         '''
         # FOR ALL USERS
         most_similar_user_indices = np.argsort(
@@ -151,7 +158,12 @@ class Pndas(object):
 
     def get_recommendations(self, user_list):
         ''' Retreive recommendations for each user in user_list
-
+            
+            Args:
+                user_list: (list) a list of users to make recomendations on
+                
+            Returns:
+                total_recss: (dictionary) Dict of the user with its subreddit recomendations
 
         '''
         total_recss = {}
