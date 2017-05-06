@@ -11,3 +11,6 @@ There are currently over 1 million subreddits to pick from. It can be overwhelmi
 ## The Dataset
 
 This [dataset](https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/) was found on [r/datasets](https://www.reddit.com/r/datasets/) It has all public comment data from 2007 to 2015, which is about 1.8 billion comments, totaling about 1 TB. 
+
+
+<img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/pyramid.png" width="400">
