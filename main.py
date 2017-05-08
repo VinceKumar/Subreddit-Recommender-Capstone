@@ -77,7 +77,7 @@ class Pndas(object):
     """Process Filtered/Cleaned data from Spark using Pandas methods
        These are the steps this class does:
         1. Create Utility matrix (rows = Users, columns = subreddits)
-        2. Computer user-user similarity between each user (Jaccard Similarity)
+        2. Compute user-user similarity between each user (Jaccard Similarity)
         3. Find the most similar users
         4. Get Recommendations based on where most similar users have comment activity
     
