@@ -16,3 +16,22 @@ This [dataset](https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_pu
 
 
 <img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/pyramid.png" width="400">
+
+## The Method
+
+The approaches used in recommender systems are either: Collaborative filtering, Content-based filtering, or Hybrid recommender systems. Collaborative filtering makes recommendations on users by finding the most similar users are and what they like might also be what the user will like also. Content-based filtering recommends items that are similar to those that a user liked in the past, commonly uses TF-IDF(term frequency–inverse document frequency) to find items that are similar. Hybrid recommender systems are usually better because they take the best of both worlds. 
+
+Collaborative filtering (CF) seemed like it would work the best under the time constraint and the mass amount of user data. It tends to fail when there are not many similar users compared to the desired user to make a recommendation on. If a user is into [r/opera](https://www.reddit.com/r/opera/), [r/machinelearning](https://www.reddit.com/r/MachineLearning/), [r/Nickelback](https://www.reddit.com/r/Nickelback/), and [r/metal](https://www.reddit.com/r/Metal/). There are very few users similar to this user therefore it will be difficult to make recommendations on this user. 
+
+Content-Based Filtering (CBF) seemed like it would not be very consistent considering how much sarcasm is on reddit, and it would not generalize many cases, where [r/bird](https://www.reddit.com/r/bird/) would be similar to [r/eagles](https://www.reddit.com/r/eagles/), when in reality the former subreddit is about birds and latter is about an NFL(football) team. Another case would be where users who are in communities with opposing views would probably not like a recommendation to a subreddit with completely opposite views. An example of that is [r/The_Donald](https://www.reddit.com/r/The_Donald/) is a subreddit for users who like Trump, while [r/MarchAgainstTrump](https://www.reddit.com/r/MarchAgainstTrump/) is a subreddit for people who dislike Trump. 
+
+I would build a Hybrid recommender if I were deploying this in the industry, but given my time and financial constraints, I will stick to just the CF. 
+
+### Collaborative filtering 
+
+Given a user to make a recommendation on, I find the most similar users based on where people have comment activity. Then aggregate where the 20 most similar users have comment activity in minus where the original user already has comment activity in and take votes for each user per subreddit. Whichever subreddits have the most votes, will the top recommendations in a descending fashion by the number of votes. 
+
+<img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/tables.png" width="400">
+
+
+In the figure above, to make a recommendation for Gavin. Gavin is the most similar to Richard, Nelson, and Gilfoyle. The three of these guys together all have comment activity in technews, therefore technews would be the first recommendation. The next recommendation would be programming, because 2/3 have comment activity there. Last would be compsci, since Richard is the most similar user and has comment activity there. The recommendations for Gavin in ranked order would be technews, programming, and compsci. 
