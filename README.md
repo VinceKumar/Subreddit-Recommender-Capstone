@@ -35,3 +35,68 @@ Given a user to make a recommendation on, I find the most similar users based on
 
 
 In the figure above, to make a recommendation for Gavin. Gavin is the most similar to Richard, Nelson, and Gilfoyle. The three of these guys together all have comment activity in technews, therefore technews would be the first recommendation. The next recommendation would be programming, because 2/3 have comment activity there. Last would be compsci, since Richard is the most similar user and has comment activity there. The recommendations for Gavin in ranked order would be technews, programming, and compsci. 
+
+
+## To Run
+
+
+### Steps:
+
+1. Torrent data onto an EC2 (I reccomend this way, because it gets around the bottleneck of your ISP's upload speeds)
+2. Upload the unzipped data onto your S3 bucket all in the same directory
+3. Launch cluster(EMR) on AWS 
+
+ ``` 
+ bash launch_cluster.sh mybucket_name mypem 20
+ ```
+launch_cluster.sh  Takes three arguments:  
+  - bucket name - one that has already been created
+  - name of key file - without .pem extension
+  - number of slave instances   
+***Modify script as needed
+ 
+4. Run PySpark with jupyter kernel in EMR and create SSH tunnel 
+5. Run Jupyspark kernel and connect on your tunneled Jupyter notebook
+
+##### Spark
+
+1. Create an instance of Pyspk:
+     ```
+     spark_data = Pyspk(INSERT S3 READ LINK, UTC TIME SPLIT) 
+     ```
+ 
+  UTC time split will split everything after the specified time to be test data, and everything before to be training data. 
+  
+2. After it has finished running (few hours), you can write to s3 by calling the method of the instance __write_s3__, AWS credentials need to be initialized also to write. 
+     ```
+     spark_data.write_s3(s3_write_link)
+     ```
+3. There will be many csv's that will need to be concatenated, use an EC2 instance to do this. It should be much quicker than the previous steps
+
+##### Pandas
+1. Import csv of dataframe  
+    ```
+    df = pd.read_csv(concatenated_csv)
+    ```
+2. Create an instance of Pndas
+    ```
+    pandas_data = Pnds(df)
+    ```
+
+2. This will create a Utility matrix where the rows are Users and columns are subreddits
+2. Then it will compute the user-user similarity between each user using Jaccard Similarity
+3. Find the most similar users
+4. Get Recommendations based on where most similar users have comment activity, for a list of users by:
+    ```
+    pandas_data.get_recommendations(user_list)
+    ```
+    which will return a dictionary of the user with its subreddit recomendations 
+
+
+## Dependencies
+
+* Spark 2.1
+* Python 2.7.13 
+* Numpy
+* Pandas
+* Scipy
