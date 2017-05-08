@@ -31,7 +31,7 @@ I would build a Hybrid recommender if I were deploying this in the industry, but
 
 Given a user to make a recommendation on, I find the most similar users based on where people have comment activity. Then aggregate where the 20 most similar users have comment activity in minus where the original user already has comment activity in and take votes for each user per subreddit. Whichever subreddits have the most votes, will the top recommendations in a descending fashion by the number of votes. 
 
-<img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/tables.png" width="400">
+<img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/tables.png" width="800">
 
 
 In the figure above, to make a recommendation for Gavin. Gavin is the most similar to Richard, Nelson, and Gilfoyle. The three of these guys together all have comment activity in technews, therefore technews would be the first recommendation. The next recommendation would be programming, because 2/3 have comment activity there. Last would be compsci, since Richard is the most similar user and has comment activity there. The recommendations for Gavin in ranked order would be technews, programming, and compsci. 
