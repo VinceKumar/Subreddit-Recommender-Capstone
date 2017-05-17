@@ -9,7 +9,7 @@ from scipy.spatial.distance import pdist, jaccard
 
 
 class Pyspk(object):
-    """Use to Filter dataset in spark, therefore it will be parallelized.
+    """Used to filter dataset in spark(parallelization)
        Write filtered CSV to S3
        Then finish preprocessing in Pandas
        Split Train/Test at UTC time
