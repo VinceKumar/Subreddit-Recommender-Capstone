@@ -42,7 +42,7 @@ In the figure above, to make a recommendation for Gavin. Gavin is the most simil
 
 ### Steps:
 
-1. Torrent data onto an EC2 (I reccomend this way, because it gets around the bottleneck of your ISP's upload speeds)
+1. Torrent data onto an EC2 (I recommend this way, because it gets around the bottleneck of your ISP's upload speeds)
 2. Upload the unzipped data onto your S3 bucket all in the same directory
 3. Launch cluster(EMR) on AWS 
 
