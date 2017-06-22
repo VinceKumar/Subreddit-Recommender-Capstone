@@ -13,7 +13,7 @@ class Pyspk(object):
        Write filtered CSV to S3
        Then finish preprocessing in Pandas
        Split Train/Test at UTC time
-       
+
         Args:
             s3_read_link: (str) link to s3 dataset
             utc_split: (int) where to split the data into train/test 
@@ -21,18 +21,16 @@ class Pyspk(object):
                 is test data 
     """
 
-    def __init__(self, s3_read_link,utc_split):
+    def __init__(self, s3_read_link, utc_split):
         self.utc_split = utc_split
         self.df = self.read_data(s3_read_link)
         self.df_filtered = self._spark_filter()
         self.train, self.test = self.split(self.utc_split)
 
-
-
-    def read_data(self,s3_read_link):
+    def read_data(self, s3_read_link):
         """
         Loads data into spark using read json method from s3 link
-        
+
         Args:
             s3_read_link: (str) link to s3 dataset
         """
@@ -43,22 +41,25 @@ class Pyspk(object):
         Filter criteria used:
             - Keep users with more than 60 posts
             - Keep users who did not delete their accounts
-        
+
         """
         result_filtered_users = self.df.groupBy(
             'author').count().where('count>60').where('author != "[deleted]"')
-        df_filtered = self.df[self.df.author.isin(set(result_filtered_users.toPandas().author.tolist()))]
+        df_filtered = self.df[self.df.author.isin(
+            set(result_filtered_users.toPandas().author.tolist()))]
 
         return df_filtered.select('author', 'subreddit', 'created_utc')
 
-    def split(self,utc_split):
+    def split(self, utc_split):
         '''Split the data like a time series data at a certain utc threshold (utc_split)
         Everything below utc is training data and everything equal to or after utc_split
         is considered test data
 
         '''
-        train = self.df_filtered.select('author', 'subreddit', 'created_utc').where('created_utc < {} '.format(utc_split))   
-        test = self.df_filtered.select('author', 'subreddit', 'created_utc').where('created_utc >= {} '.format(utc_split))
+        train = self.df_filtered.select('author', 'subreddit', 'created_utc').where(
+            'created_utc < {} '.format(utc_split))
+        test = self.df_filtered.select('author', 'subreddit', 'created_utc').where(
+            'created_utc >= {} '.format(utc_split))
 
         return train, test
 
@@ -68,7 +69,7 @@ class Pyspk(object):
     def write_s3(self, data_frame, s3_write_link):
         """
         Will write to S3 bucket in several csv's. Use CLI to merge them into one
-        
+
         """
         data_frame.write.csv(s3_write_link)
 
@@ -80,7 +81,7 @@ class Pndas(object):
         2. Compute user-user similarity between each user (Jaccard Similarity)
         3. Find the most similar users
         4. Get Recommendations based on where most similar users have comment activity
-    
+
         Args:
             df: (DataFrame) Cleaned/Filtered DataFrame
     """
@@ -135,7 +136,6 @@ class Pndas(object):
         np.diag(jaccard_user_similarity, 1.)
         # Creating Jaccard Similarity Matrix
 
-
         for i in xrange(m):
             for j in xrange(m):
                 if i != j:
@@ -152,7 +152,7 @@ class Pndas(object):
 
         Returns:
             top_users_ranked: (DataFrame) Most similar users for all users
-        
+
         '''
         # FOR ALL USERS
         most_similar_user_indices = np.argsort(
@@ -168,10 +168,10 @@ class Pndas(object):
 
     def get_recommendations(self, user_list):
         ''' Retreive recommendations for each user in user_list
-            
+
             Args:
                 user_list: (list) a list of users to make recomendations on
-                
+
             Returns:
                 total_recss: (dictionary) Dict of the user with its subreddit recomendations
 
