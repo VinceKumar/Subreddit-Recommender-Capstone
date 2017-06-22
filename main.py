@@ -23,11 +23,11 @@ class Pyspk(object):
 
     def __init__(self, s3_read_link, utc_split):
         self.utc_split = utc_split
-        self.df = self.read_data(s3_read_link)
+        self.df = self._read_data(s3_read_link)
         self.df_filtered = self._spark_filter()
-        self.train, self.test = self.split(self.utc_split)
+        self.train, self.test = self._split(self.utc_split)
 
-    def read_data(self, s3_read_link):
+    def _read_data(self, s3_read_link):
         """
         Loads data into spark using read json method from s3 link
 
@@ -50,12 +50,12 @@ class Pyspk(object):
 
         return df_filtered.select('author', 'subreddit', 'created_utc')
 
-    def split(self, utc_split):
-        '''Split the data like a time series data at a certain utc threshold (utc_split)
+    def _split(self, utc_split):
+        """Split the data like a time series data at a certain utc threshold (utc_split)
         Everything below utc is training data and everything equal to or after utc_split
         is considered test data
 
-        '''
+        """
         train = self.df_filtered.select('author', 'subreddit', 'created_utc').where(
             'created_utc < {} '.format(utc_split))
         test = self.df_filtered.select('author', 'subreddit', 'created_utc').where(
@@ -95,14 +95,14 @@ class Pndas(object):
         self.top_users_ranked = rec_builder()
 
     def _utility_matrix(self):
-        '''Creates a Utility Matrix with users as rows and subreddits as columns
+        """Creates a Utility Matrix with users as rows and subreddits as columns
 
         Args:
 
         Returns:
             Pandas dataframe: df_utility_matrix
 
-        '''
+        """
 
         df_utility_matrix = pd.crosstab(self.df['author'], self.df[
                                         'subreddit']).reset_index()
@@ -117,7 +117,7 @@ class Pndas(object):
         return df_utility_matrix
 
     def jaccard_similarity_matrix(self):
-        '''Computes the Jaccard Similarity for each user to all other users in the
+        """Computes the Jaccard Similarity for each user to all other users in the
         Original set of users
 
         Args: 
@@ -126,7 +126,7 @@ class Pndas(object):
             jaccard_user_similarity: (np array) array comparing similarity for each user with 
             every other user 
 
-        '''
+        """
 
         author = self.df.pop('author')
         util_matrix_vals_np = self.df.values
@@ -145,7 +145,7 @@ class Pndas(object):
         return 1 - jaccard_user_similarity
 
     def rec_builder(self):
-        '''Change 20 to top number of similar users to compare to
+        """Change 20 to top number of similar users to compare to
 
         Args:
             user_name: (str) user to name recommendation on
@@ -153,7 +153,7 @@ class Pndas(object):
         Returns:
             top_users_ranked: (DataFrame) Most similar users for all users
 
-        '''
+        """
         # FOR ALL USERS
         most_similar_user_indices = np.argsort(
             -self.jaccard_user_similarity, axis=1)[:, :20]
@@ -167,7 +167,7 @@ class Pndas(object):
         return top_users_ranked
 
     def get_recommendations(self, user_list):
-        ''' Retreive recommendations for each user in user_list
+        """Retreive recommendations for each user in user_list
 
             Args:
                 user_list: (list) a list of users to make recomendations on
@@ -175,7 +175,7 @@ class Pndas(object):
             Returns:
                 total_recss: (dictionary) Dict of the user with its subreddit recomendations
 
-        '''
+        """
         total_recss = {}
 
         for user in user_list:
