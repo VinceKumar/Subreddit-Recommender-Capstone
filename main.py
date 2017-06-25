@@ -1,9 +1,5 @@
 import numpy as np
 import pandas as pd
-import pyspark as ps
-from pyspark.sql import SQLContext
-from pyspark.sql import SparkSession
-from pyspark.sql import functions
 import operator
 from scipy.spatial.distance import pdist, jaccard
 
@@ -23,10 +19,11 @@ class Pyspk(object):
 
     def __init__(self, s3_read_link, utc_split):
         self.utc_split = utc_split
-        self.df = self._read_data(s3_read_link)
+        self.df = _read_data(s3_read_link)
         self.df_filtered = self._spark_filter()
         self.train, self.test = self._split(self.utc_split)
 
+    @classmethod
     def _read_data(self, s3_read_link):
         """
         Loads data into spark using read json method from s3 link
@@ -36,6 +33,7 @@ class Pyspk(object):
         """
         return spark.read.json(s3_read_link)
 
+    @classmethod
     def _spark_filter(self):
         """
         Filter criteria used:
@@ -63,10 +61,12 @@ class Pyspk(object):
 
         return train, test
 
-    def to_pandas(self, df):
+    @classmethod
+    def to_pandas(df):
         return df.toPandas()
 
-    def write_s3(self, data_frame, s3_write_link):
+    @classmethod
+    def write_s3(data_frame, s3_write_link):
         """
         Will write to S3 bucket in several csv's. Use CLI to merge them into one
 
@@ -177,6 +177,9 @@ class Pndas(object):
 
         """
         total_recss = {}
+        first = operator.itemgetter(0)
+        second = operator.itemgetter(1)
+
 
         for user in user_list:
 
@@ -189,8 +192,7 @@ class Pndas(object):
             recomendations = recomendations - recomendations.iloc[0, ]
             sub_recommendations = {
                 k: v for k, v in recomendations.sum(axis=0).iteritems() if v > 4}
-            ranked_recommendations = map(lambda x: x[0], sorted(
-                sub_recommendations.iteritems(), key=operator.itemgetter(1), reverse=True))
+            ranked_recommendations = map(lambda x: first(x), sorted(sub_recommendations.iteritems(), key=second(), reverse=True))
             total_recss[user] = ranked_recommendations
 
         return total_recss
