@@ -5,7 +5,7 @@ Capstone Project for Galvanize: Data Science Immersive
 ## Introduction
 Reddit is the 4th most visited site in the US([Alexa](http://www.alexa.com/topsites/countries/US)). It is an aggregation of online discussion communities. Each content community is known as a subreddit; users can post links to other websites or create texts posts, which can be upvoted/downvoted based on the quality of the content. Then a discussion takes place, based on this post. There is a full spectrum of subreddits(topics) including science, politics, music, various image types, jokes, news, and gaming.
 
-There are currently over 1 million subreddits. It can be overwhelming having to deal with a list of that many choices, so I thought it would be a great opportunity to make a recommender, since nobody has time to look through a list of a million subreddits to see what they might like. Therefore, I decided to make a subreddit recommender. 
+There are currently over 1 million subreddits. It can be overwhelming having to deal with a list of that many choices, so I thought it would be a great opportunity to make a recommender, since nobody has time to look through a list of a million subreddits to see what they might like. 
 
 <img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/timeparadox.png" width="450">    <img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/meme1.png" width="250">
 
