@@ -18,7 +18,7 @@ This [dataset](https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_pu
 
 ## The Method
 
-The approaches used in recommender systems are either: Collaborative filtering, Content-based filtering, or Hybrid recommender systems. Collaborative filtering makes recommendations on users by finding the most similar users are and what they like might also be what the user will like also. Content-based filtering recommends items that are similar to those that a user liked in the past, commonly uses TF-IDF(term frequency–inverse document frequency) to find items that are similar. Hybrid recommender systems are usually better because they take the best of both worlds. 
+The approaches used in recommender systems are either: Collaborative filtering, Content-based filtering, or Hybrid recommender systems. Collaborative filtering makes recommendations on users by finding the most similar users and finding the mutual activity of these similar users. Content-based filtering recommends items that are similar to those that a user liked in the past, the technique commonly uses TF-IDF(term frequency–inverse document frequency) to find items that are similar. Hybrid recommender systems are usually better because they take the best of both worlds. 
 
 Collaborative filtering (CF) seemed like it would work the best under the time constraint and the mass amount of user data. It tends to fail when there are not many similar users compared to the desired user to make a recommendation on. If a user is into [r/opera](https://www.reddit.com/r/opera/), [r/machinelearning](https://www.reddit.com/r/MachineLearning/), [r/Nickelback](https://www.reddit.com/r/Nickelback/), and [r/metal](https://www.reddit.com/r/Metal/). There are very few users similar to this user therefore it will be difficult to make recommendations on this user. 
 
@@ -28,7 +28,7 @@ I would build a Hybrid recommender if I were deploying this in the industry, but
 
 ### Collaborative filtering 
 
-Given a user to make a recommendation on, I find the most similar users based on where people have comment activity. Then aggregate where the 20 most similar users have comment activity in minus where the original user already has comment activity in and take votes for each user per subreddit. Whichever subreddits have the most votes, will the top recommendations in a descending fashion by the number of votes. 
+Given a user to make a recommendation on, I find the most similar users based on where people have comment activity(Jaccard similarity). Then aggregate where the 20 most similar users have comment activity in minus where the original user already has comment activity in and take votes for each user per subreddit. Whichever subreddits have the most votes, will be the top recommendations in a descending fashion by the number of votes. 
 
 <img src="https://raw.githubusercontent.com/VinceKumar/Subreddit-Recommender-Capstone/master/img/tables.png" width="800">
 
