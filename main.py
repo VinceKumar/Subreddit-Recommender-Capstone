@@ -24,7 +24,7 @@ class Pyspk(object):
         self.train, self.test = self._split(self.utc_split)
 
     @classmethod
-    def _read_data(self, s3_read_link):
+    def _read_data(cls, s3_read_link):
         """
         Loads data into spark using read json method from s3 link
 
@@ -34,7 +34,7 @@ class Pyspk(object):
         return spark.read.json(s3_read_link)
 
     @classmethod
-    def _spark_filter(self):
+    def _spark_filter(cls):
         """
         Filter criteria used:
             - Keep users with more than 60 posts
@@ -62,11 +62,11 @@ class Pyspk(object):
         return train, test
 
     @classmethod
-    def to_pandas(df):
+    def to_pandas(cls, df):
         return df.toPandas()
 
     @classmethod
-    def write_s3(data_frame, s3_write_link):
+    def write_s3(cls, data_frame, s3_write_link):
         """
         Will write to S3 bucket in several csv's. Use CLI to merge them into one
 
